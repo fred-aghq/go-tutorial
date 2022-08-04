@@ -4,7 +4,7 @@ import (
 	"booking/modules/input"
 	"booking/modules/validate"
 	"fmt"
-	"strings"
+	"strconv"
 )
 
 const maxTickets uint = 50
@@ -13,7 +13,7 @@ var remainingTickets uint = maxTickets
 
 const conferenceName string = "Go Conference"
 
-var bookings []string = []string{}
+var bookings []map[string]string = make([]map[string]string, 0)
 
 func greetUsers() {
 	fmt.Printf("Welcome to the %s booking system.\n", conferenceName)
@@ -25,17 +25,23 @@ func greetUsers() {
 func getFirstNames() []string {
 	firstNames := []string{}
 	for _, booking := range bookings {
-		names := strings.Fields(booking)
-		firstName := names[0]
-		firstNames = append(firstNames, firstName)
+		firstNames = append(firstNames, booking["firstName"])
 	}
 
 	return firstNames
 }
 
-func bookTickets(firstName string, lastName string, userTickets uint) {
+func bookTickets(firstName string, lastName string, email string, userTickets uint) {
 	remainingTickets = remainingTickets - userTickets
-	bookings = append(bookings, firstName+" "+lastName)
+
+	var userData = make(map[string]string)
+
+	userData["firstName"] = firstName
+	userData["lastName"] = lastName
+	userData["email"] = email
+	userData["userTickets"] = strconv.FormatUint(uint64(userTickets), 10)
+
+	bookings = append(bookings, userData)
 
 	fmt.Printf("Thanks, %s! You have successfully booked %d tickets", firstName, userTickets)
 }
@@ -60,9 +66,10 @@ func main() {
 			continue
 		}
 
-		bookTickets(firstName, lastName, userTickets)
+		bookTickets(firstName, lastName, email, userTickets)
 
-		fmt.Printf("First names: %v\n", getFirstNames())
+		fmt.Printf("\n\nFirst names: %v\n", getFirstNames())
+		fmt.Printf("Bookings:\n%v\n", bookings)
 
 		fmt.Printf("There are %d tickets remaining.\n", remainingTickets)
 		fmt.Println()
