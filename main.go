@@ -4,7 +4,6 @@ import (
 	"booking/modules/input"
 	"booking/modules/validate"
 	"fmt"
-	"strconv"
 )
 
 const maxTickets uint = 50
@@ -13,7 +12,7 @@ var remainingTickets uint = maxTickets
 
 const conferenceName string = "Go Conference"
 
-var bookings []map[string]string = make([]map[string]string, 0)
+var bookings []input.UserData = make([]input.UserData, 0)
 
 func greetUsers() {
 	fmt.Printf("Welcome to the %s booking system.\n", conferenceName)
@@ -25,7 +24,7 @@ func greetUsers() {
 func getFirstNames() []string {
 	firstNames := []string{}
 	for _, booking := range bookings {
-		firstNames = append(firstNames, booking["firstName"])
+		firstNames = append(firstNames, booking.FirstName)
 	}
 
 	return firstNames
@@ -34,12 +33,12 @@ func getFirstNames() []string {
 func bookTickets(firstName string, lastName string, email string, userTickets uint) {
 	remainingTickets = remainingTickets - userTickets
 
-	var userData = make(map[string]string)
-
-	userData["firstName"] = firstName
-	userData["lastName"] = lastName
-	userData["email"] = email
-	userData["userTickets"] = strconv.FormatUint(uint64(userTickets), 10)
+	userData := input.UserData{
+		FirstName:       firstName,
+		LastName:        lastName,
+		Email:           email,
+		NumberOfTickets: userTickets,
+	}
 
 	bookings = append(bookings, userData)
 
