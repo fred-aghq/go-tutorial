@@ -2,13 +2,6 @@ package input
 
 import "fmt"
 
-type UserData struct {
-	FirstName       string
-	LastName        string
-	Email           string
-	NumberOfTickets uint
-}
-
 func GetUserInput() (string, string, string, uint) {
 	var firstName string
 	var lastName string
