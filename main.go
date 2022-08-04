@@ -4,6 +4,7 @@ import (
 	"booking/modules/input"
 	"booking/modules/validate"
 	"fmt"
+	"time"
 )
 
 const maxTickets uint = 50
@@ -15,10 +16,12 @@ const conferenceName string = "Go Conference"
 var bookings []input.UserData = make([]input.UserData, 0)
 
 func greetUsers() {
+	fmt.Println("##################################################################")
 	fmt.Printf("Welcome to the %s booking system.\n", conferenceName)
 	fmt.Println("Use this system to book attendance.")
 	fmt.Println()
 	fmt.Printf("There are currently %d tickets available.\n\n", remainingTickets)
+	fmt.Println("##################################################################")
 }
 
 func getFirstNames() []string {
@@ -30,28 +33,31 @@ func getFirstNames() []string {
 	return firstNames
 }
 
-func bookTickets(firstName string, lastName string, email string, userTickets uint) {
-	remainingTickets = remainingTickets - userTickets
-
-	userData := input.UserData{
-		FirstName:       firstName,
-		LastName:        lastName,
-		Email:           email,
-		NumberOfTickets: userTickets,
-	}
-
+func bookTickets(userData input.UserData) {
+	remainingTickets = remainingTickets - userData.NumberOfTickets
 	bookings = append(bookings, userData)
 
-	fmt.Printf("Thanks, %s! You have successfully booked %d tickets", firstName, userTickets)
+	fmt.Printf("Thanks, %s! You have successfully booked %d tickets\n\n", userData.FirstName, userData.NumberOfTickets)
+}
+
+func sendTicket(userData input.UserData) {
+	time.Sleep(10 * time.Second)
+
+	ticket := fmt.Sprintf("%d tickets for %s %s", userData.NumberOfTickets, userData.FirstName, userData.LastName)
+	fmt.Println()
+	fmt.Println("########################################################################")
+	fmt.Printf("Sending ticket:\n %s\nto email address %s\n", ticket, userData.Email)
+	fmt.Println("########################################################################")
+	fmt.Println()
 }
 
 func main() {
 	for remainingTickets > 0 {
 		greetUsers()
 
-		firstName, lastName, email, userTickets := input.GetUserInput()
+		userData := input.GetUserInput()
 
-		validName, validEmail, validTickets := validate.ValidateUserInput(firstName, lastName, email, userTickets, remainingTickets)
+		validName, validEmail, validTickets := validate.ValidateUserInput(userData, remainingTickets)
 
 		switch false {
 		case validEmail:
@@ -65,7 +71,8 @@ func main() {
 			continue
 		}
 
-		bookTickets(firstName, lastName, email, userTickets)
+		bookTickets(userData)
+		sendTicket(userData)
 
 		fmt.Printf("\n\nFirst names: %v\n", getFirstNames())
 		fmt.Printf("Bookings:\n%v\n", bookings)

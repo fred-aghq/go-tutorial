@@ -1,8 +1,10 @@
 package input
 
-import "fmt"
+import (
+	"fmt"
+)
 
-func GetUserInput() (string, string, string, uint) {
+func GetUserInput() UserData {
 	var firstName string
 	var lastName string
 	var email string
@@ -20,5 +22,10 @@ func GetUserInput() (string, string, string, uint) {
 	fmt.Printf("Thanks %s. How many tickets would you like?:\n", firstName)
 	fmt.Scan(&userTickets)
 
-	return firstName, lastName, email, userTickets
+	return UserData{
+		FirstName:       firstName,
+		LastName:        lastName,
+		Email:           email,
+		NumberOfTickets: userTickets,
+	}
 }
